@@ -1,12 +1,5 @@
 version: '3'
 services:
-  m183-totp:
-    image: m183-totp:latest
-    environment:
-      - ROCKET_SECRET_KEY="F/UXeFE3dNwSxXremOWc58c0J3AOWwOwSUdY78buKfk="
-    ports:
-      - 8006:8000
-
   database:
     image: 'postgres:latest'
     restart: "always"
