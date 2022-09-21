@@ -817,6 +817,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "google-authenticator"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe01164f9eb3affdbcb9dde3191ed9d1ae4a1778cdb1c648d3b063bd1b04152b"
+dependencies = [
+ "base32",
+ "hmac-sha1",
+ "lazy_static",
+ "percent-encoding",
+ "rand 0.7.3",
+]
+
+[[package]]
 name = "h2"
 version = "0.3.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1173,7 +1186,7 @@ name = "m183-totp"
 version = "0.1.0"
 dependencies = [
  "futures",
- "google-authenticator",
+ "google-authenticator 0.3.0",
  "once_cell",
  "openssl",
  "rocket",
@@ -1998,7 +2011,7 @@ dependencies = [
  "chrono",
  "fehler",
  "futures",
- "google-authenticator",
+ "google-authenticator 0.2.1",
  "lazy_static",
  "rand 0.8.5",
  "regex",
