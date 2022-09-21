@@ -5,7 +5,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL="postgres://postgres:postgres@postgres/database"
+      - DATABASE_URL="postgres://postgres:postgres@host.docker.internal/"
       - ROCKET_SECRET_KEY="F/UXeFE3dNwSxXremOWc58c0J3AOWwOwSUdY78buKfk="
     ports:
       - 8006:8000
@@ -19,6 +19,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=database
+    ports:
+      - 5432:5432
     volumes:
       - pgdb-data:/var/lib/postgresql/data/
     networks:
@@ -27,6 +29,7 @@ services:
 
 networks:
   pg-net:
+    external: true
 
 volumes:
   pgdb-data:
