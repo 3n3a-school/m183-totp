@@ -1,0 +1,27 @@
+name: Mirroring
+
+on: [push, delete]
+
+jobs:
+  to_gitlab:
+    runs-on: ubuntu-latest
+    steps:                                              # <-- must use actions/checkout before mirroring!
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+        
+      - uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
+            
+      - run: |
+          ssh-keyscan -t rsa gitlab.com >> ~/.ssh/known_hosts
+          git clone git@gitlab.com:3n3a/m183-totp.git ../sync
+          (cd ../sync && rm -rf *)
+          rsync -av --progress . ../sync --exclude .git
+          cd ../sync
+          git config --global user.email "46775561+3n3a@users.noreply.github.com"
+          git config --global user.name "3n3a"
+          git add .
+          git commit -m "${{ github.event.head_commit.message }}"
+          git push
