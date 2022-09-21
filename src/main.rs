@@ -7,6 +7,11 @@ use sqlx::{postgres::PgPool, *};
 use std::result::Result;
 use std::*;
 
+use once_cell::sync::Lazy;
+
+const DATABASE_URL: Lazy<String> = Lazy::new(||env::var("ASSETS_PATH")
+    .unwrap_or(String::from("postgres://postgres:postgres@localhost/")) );
+
 #[get("/login")]
 fn get_login() -> Template {
     Template::render("login", json!({}))
@@ -61,7 +66,7 @@ async fn show_all_users(conn: &State<PgPool>, user: Option<User>) -> Result<Temp
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let conn = PgPool::connect("postgres://postgres:postgres@localhost/").await?;
+    let conn = PgPool::connect(&(*DATABASE_URL).clone()).await?;
     let users: Users = conn.clone().into();
     users.create_table().await?; 
     let _ = rocket::build()

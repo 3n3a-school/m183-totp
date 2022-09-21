@@ -1,17 +1,20 @@
 version: '3'
 services:
   m183-totp:
-    image: m183-totp:latest
+    image: docker.io/3n3a/m183-totp:0.1.0
+    depends_on:
+      - postgres
     environment:
+      - DATABASE_URL="postgres://postgres:postgres@postgres/database"
       - ROCKET_SECRET_KEY="F/UXeFE3dNwSxXremOWc58c0J3AOWwOwSUdY78buKfk="
     ports:
       - 8006:8000
+    networks:
+      - pg-net
 
-  database:
+  postgres:
     image: 'postgres:latest'
     restart: "always"
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
