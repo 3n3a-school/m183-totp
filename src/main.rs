@@ -1,3 +1,4 @@
+use google_authenticator::{ErrorCorrectionLevel, GoogleAuthenticator};
 use rocket::{State, form::*, get, post, response::Redirect, routes};
 use rocket_auth::{prelude::Error, *};
 use rocket_dyn_templates::Template;
@@ -19,7 +20,7 @@ fn get_login() -> Template {
 
 #[post("/login", data = "<form>")]
 async fn post_login(auth: Auth<'_>, form: Form<Login>) -> Result<Redirect, Error> {
-    let result = auth.login(&form).await;
+    let result = auth.login(&form, false).await;
     println!("login attempt: {:?}", result);
     result?;
     Ok(Redirect::to("/"))
@@ -33,9 +34,9 @@ async fn get_signup() -> Template {
 #[post("/signup", data = "<form>")]
 async fn post_signup(auth: Auth<'_>, form: Form<Signup>) -> Result<Redirect, Error> {
     auth.signup(&form).await?;
-    auth.login(&form.into()).await?;
+    auth.login(&form.into(), true).await?;
 
-    Ok(Redirect::to("/"))
+    Ok(Redirect::to("/show_totp"))
 }
 
 #[get("/")]
@@ -48,6 +49,7 @@ fn logout(auth: Auth<'_>) -> Result<Template, Error> {
     auth.logout()?;
     Ok(Template::render("logout", json!({})))
 }
+
 #[get("/delete")]
 async fn delete(auth: Auth<'_>) -> Result<Template, Error> {
     auth.delete().await?;
@@ -62,6 +64,16 @@ async fn show_all_users(conn: &State<PgPool>, user: Option<User>) -> Result<Temp
         "users",
         json!({"users": users, "user": user}),
     ))
+}
+
+#[get("/show_totp")]
+async fn show_totp(user: User) -> Template {
+    let secret = user.totp_secret();
+    let g_auth = GoogleAuthenticator::new();
+    let title = "Rocket Auth TOTP";
+    let account_name = user.email();
+    let url = (&g_auth).qr_code_url(&secret, account_name, title, 200, 200, ErrorCorrectionLevel::High).clone().to_owned();
+    Template::render("totp", json!({ "user": user, "totp_url": &url }))
 }
 
 #[tokio::main]
@@ -80,7 +92,8 @@ async fn main() -> Result<(), Error> {
                 post_login,
                 logout,
                 delete,
-                show_all_users
+                show_all_users,
+                show_totp
             ],
         )
         .manage(conn)

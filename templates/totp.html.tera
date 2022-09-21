@@ -1,0 +1,9 @@
+{% extends "base" %}
+{% block body %}
+{% if user %}
+<div>
+    <h2>Register a Device with TOTP</h2>
+    <img src="{{ totp_url }}" />
+</div>
+{% endif %}
+{% endblock body %}
