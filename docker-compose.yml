@@ -29,7 +29,6 @@ services:
 
 networks:
   pg-net:
-    external: true
 
 volumes:
   pgdb-data:
