@@ -5,7 +5,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL="postgres://postgres:postgres@postgres/"
+      - DATABASE_URL="postgres://postgres:postgres@postgres/database"
       - ROCKET_SECRET_KEY="F/UXeFE3dNwSxXremOWc58c0J3AOWwOwSUdY78buKfk="
     ports:
       - 8007:8000
