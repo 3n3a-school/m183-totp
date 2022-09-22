@@ -1,7 +1,7 @@
 version: '3'
 services:
   m183-totp:
-    image: docker.io/3n3a/m183-totp:0.2.0
+    image: docker.io/3n3a/m183-totp:0.2.1
     depends_on:
       - postgres
     environment:
