@@ -15,7 +15,7 @@ tokio = { version = "1.22.0", features = ["full"] }
 futures = "0.3.25"
 openssl = { version = "*", features = ["vendored"] }
 tera = "1"
-serde_json = "1.0.88"
+serde_json = "1.0.89"
 once_cell = "1.16.0"
 google-authenticator = "0.3.0"
 
